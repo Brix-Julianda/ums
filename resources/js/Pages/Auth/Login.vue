@@ -25,7 +25,8 @@
         </div>
 
         <div class="flex justify-end">
-          <Button label="Login" color="blue" size="md" icon="fas fa-sign-in-alt" @click.prevent="login" />
+          <Button label="Login" color="blue" size="md" icon="fas fa-sign-in-alt" @click.prevent="login"
+            rounded="rounded-full" />
         </div>
       </form>
     </div>
@@ -37,6 +38,8 @@ import { reactive, ref } from "vue";
 import Swal from "sweetalert2";
 import InputField from "../Components/InputField.vue";
 import Button from "../Components/Button.vue";
+import axios from "axios";
+import { route } from "ziggy-js";
 
 
 const form = reactive({
@@ -74,19 +77,36 @@ const loginValidation = () => {
 }
 
 const login = () => {
-
-  const validation = loginValidation();
-
-  if (validation) {
+  const isInvalid = loginValidation();
+  if (isInvalid) {
     Swal.fire({
       title: 'Error',
       text: 'Please fill up the fields',
       icon: 'error'
     });
     return;
-  } else {
-    console.log('all validations are accepted!');
   }
 
+  axios.post(route('login.store'), form)
+    .then((res) => {
+      Swal.fire({
+        title: 'Success',
+        text: 'Login successful!',
+        icon: 'success'
+      }).then(() => {
+        // Redirect after success
+        window.location.href = res.data.redirect;
+      });
+    })
+    .catch((error) => {
+      if (error.response && error.response.data.errors) {
+        const messages = Object.values(error.response.data.errors).flat();
+        Swal.fire({
+          title: 'Error',
+          html: messages.join('<br>'),
+          icon: 'error',
+        });
+      }
+    });
 };
 </script>

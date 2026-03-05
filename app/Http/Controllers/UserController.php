@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Auth;
+use Hash;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -24,9 +27,46 @@ class UserController extends Controller
         return inertia('Auth/Register');
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        // User Creation
+        $user = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+
+        ]);
+
+        info('user data'.json_encode($request->all()));
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $credentials['email'])->first();
+        if (! $user) {
+            return response()->json([
+                'errors' => ['email' => 'No account found with this email.'],
+            ], 422);
+        }
+
+        if (! Hash::check($credentials['password'], $user->password)) {
+            return response()->json([
+                'errors' => ['password' => 'The password is incorrect.'],
+            ], 422);
+        }
+
+        Auth::login($user);
+
+        $request->session()->regenerate();
+
+        return response()->json([
+            'success' => true,
+            'redirect' => route('user.index'),
+        ]);
     }
 
     public function show()

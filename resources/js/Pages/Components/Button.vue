@@ -1,13 +1,15 @@
 <template>
   <button :class="buttonClasses" @click="$emit('click', $event)">
     <!-- Left Icon -->
-    <i v-if="icon && iconPosition === 'left'" :class="[icon, iconSize, 'mr-2']"></i>
+    <i v-if="icon && iconPosition === 'left'" :class="[icon, iconSize]"></i>
 
     <!-- Label -->
-    <span>{{ label }}</span>
+    <span class="flex items-center justify-center text-center leading-none">
+      {{ label }}
+    </span>
 
     <!-- Right Icon -->
-    <i v-if="icon && iconPosition === 'right'" :class="[icon, iconSize, 'ml-2']"></i>
+    <i v-if="icon && iconPosition === 'right'" :class="[icon, iconSize]"></i>
   </button>
 </template>
 
@@ -28,8 +30,8 @@ const props = defineProps({
     default: "md",
   },
   rounded: {
-    type: Boolean,
-    default: true,
+    type: String,
+    default: "rounded-lg",
   },
   icon: {
     type: String,
@@ -64,10 +66,10 @@ const iconSizes = {
 };
 
 const buttonClasses = computed(() => [
-  "flex items-center justify-center font-semibold transition duration-200",
+  "inline-flex items-center justify-center gap-2 font-semibold text-center leading-none transition duration-200",
   colors[props.color] || colors.blue,
   sizes[props.size] || sizes.md,
-  props.rounded ? "rounded-lg" : "rounded-none",
+  props.rounded
 ]);
 
 const iconSize = computed(() => iconSizes[props.size] || iconSizes.md);
