@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/vue3";
 import { ZiggyVue } from "ziggy-js";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 createInertiaApp({
     resolve: (name) => {
