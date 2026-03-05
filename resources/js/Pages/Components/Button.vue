@@ -1,13 +1,13 @@
 <template>
   <button :class="buttonClasses" @click="$emit('click', $event)">
     <!-- Left Icon -->
-    <i v-if="icon && iconPosition === 'left'" :class="[icon, 'mr-2']"></i>
+    <i v-if="icon && iconPosition === 'left'" :class="[icon, iconSize, 'mr-2']"></i>
 
     <!-- Label -->
     <span>{{ label }}</span>
 
     <!-- Right Icon -->
-    <i v-if="icon && iconPosition === 'right'" :class="[icon, 'ml-2']"></i>
+    <i v-if="icon && iconPosition === 'right'" :class="[icon, iconSize, 'ml-2']"></i>
   </button>
 </template>
 
@@ -53,6 +53,14 @@ const sizes = {
   sm: "px-3 py-1 text-sm",
   md: "px-4 py-2 text-sm",
   lg: "px-6 py-3 text-base",
+  xl: "px-8 py-4 text-lg",
+};
+
+const iconSizes = {
+  sm: "text-sm",
+  md: "text-sm",
+  lg: "text-base",
+  xl: "text-lg",
 };
 
 const buttonClasses = computed(() => [
@@ -61,4 +69,6 @@ const buttonClasses = computed(() => [
   sizes[props.size] || sizes.md,
   props.rounded ? "rounded-lg" : "rounded-none",
 ]);
+
+const iconSize = computed(() => iconSizes[props.size] || iconSizes.md);
 </script>
