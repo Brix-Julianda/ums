@@ -133,8 +133,9 @@ const create = () => {
     .then((res) => {
       Swal.fire({
         title: 'Success',
-        text: 'Created a user!',
-        icon: 'success'
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'OK'
       }).then(() => {
         window.location.href = res.data.redirect;
       });

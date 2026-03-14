@@ -11,9 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        // User Table
-
-        $users = User::query();
+        $users = User::with('roles')->paginate(15);
 
         return inertia('Auth/Index', [
             'users' => $users,
@@ -23,7 +21,6 @@ class UserController extends Controller
     public function create()
     {
         // User Register
-
         return inertia('Auth/Register');
     }
 
@@ -31,7 +28,7 @@ class UserController extends Controller
     {
         $validate = $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
 
@@ -41,7 +38,11 @@ class UserController extends Controller
             'password' => Hash::make($validate['password']),
         ]);
 
-        return redirect()->route('user.index');
+        return response()->json([
+            'success' => true,
+            'message' => 'User created successfully',
+            'redirect' => route('user.index'),
+        ]);
     }
 
     public function login(Request $request)
@@ -74,13 +75,36 @@ class UserController extends Controller
         ]);
     }
 
-    public function show()
+    public function show($id)
     {
-        // User View
+
+        $user = User::with('roles')->findOrFail($id);
+
+        return inertia('User/Show', [
+            'user' => $user,
+        ]);
     }
 
     public function edit()
     {
         // User Edit
+    }
+
+    /**
+     * Delete a user
+     */
+    public function destroy(User $user)
+    {
+        // Prevent deleting self
+        if (Auth::id() === $user->id) {
+            return redirect()->back()->with('error', 'You cannot delete your own account.');
+        }
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User successfully deleted',
+            'redirect' => route('user.index'),
+        ]);
     }
 }
