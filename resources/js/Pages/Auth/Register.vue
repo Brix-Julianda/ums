@@ -102,7 +102,6 @@ const validationCreation = () => {
       break;
 
     case form.confirm_password !== form.password:
-      console.log('this validation triggered!');
       valid = true;
       validation.confirm_password = true;
       message.confirm_password = 'Password is not the same!';

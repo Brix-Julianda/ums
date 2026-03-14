@@ -29,14 +29,19 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $user = $request->validate([
+        $validate = $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required',
-
         ]);
 
-        info('user data'.json_encode($request->all()));
+        User::create([
+            'name' => $validate['name'],
+            'email' => $validate['email'],
+            'password' => Hash::make($validate['password']),
+        ]);
+
+        return redirect()->route('user.index');
     }
 
     public function login(Request $request)

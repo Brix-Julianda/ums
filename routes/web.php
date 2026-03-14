@@ -5,19 +5,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
+    Route::get('/create-user', [UserController::class, 'create'])->name('user.create');
+    Route::post('/store-user', [UserController::class, 'store'])->name('user.store');
 
 });
 
 Route::post('/login', [UserController::class, 'login'])->name('login.store');
-
 Route::post('/logout', function () {
     Auth::logout();
 
     return redirect()->route('login');
 })->name('logout');
-
-Route::get('/create-user', [UserController::class, 'create'])->name('user.create');
-Route::post('/store-user', [UserController::class, 'store'])->name('user.store');
 
 // Route::get('/', function () {
 //         return inertia('Home');
