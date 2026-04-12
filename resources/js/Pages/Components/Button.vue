@@ -1,5 +1,5 @@
 <template>
-  <button :class="buttonClasses" @click="$emit('click', $event)">
+  <button :class="buttonClasses" :disabled="disabled" @click="handleClick">
     <!-- Left Icon -->
     <i v-if="icon && iconPosition === 'left'" :class="[icon, iconSize]"></i>
 
@@ -17,31 +17,26 @@
 import { computed } from "vue";
 
 const props = defineProps({
-  label: {
-    type: String,
-    default: "Button",
-  },
-  color: {
-    type: String,
-    default: "blue",
-  },
-  size: {
-    type: String,
-    default: "md",
-  },
-  rounded: {
-    type: String,
-    default: "rounded-lg",
-  },
-  icon: {
-    type: String,
-    default: "",
-  },
-  iconPosition: {
-    type: String,
-    default: "left",
+  label: { type: String, default: "Button" },
+  color: { type: String, default: "blue" },
+  size: { type: String, default: "md" },
+  rounded: { type: String, default: "rounded-lg" },
+  icon: { type: String, default: "" },
+  iconPosition: { type: String, default: "left" },
+
+  // ✅ NEW
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
+
+const emit = defineEmits(["click"]);
+
+const handleClick = (event) => {
+  if (props.disabled) return;
+  emit("click", event);
+};
 
 const colors = {
   blue: "bg-blue-600 hover:bg-blue-700 text-white",
@@ -65,12 +60,23 @@ const iconSizes = {
   xl: "text-lg",
 };
 
-const buttonClasses = computed(() => [
-  "inline-flex items-center justify-center gap-2 font-semibold text-center leading-none transition duration-200",
-  colors[props.color] || colors.blue,
-  sizes[props.size] || sizes.md,
-  props.rounded
-]);
+const buttonClasses = computed(() => {
+  if (props.disabled) {
+    return [
+      "inline-flex items-center justify-center gap-2 font-semibold",
+      sizes[props.size] || sizes.md,
+      props.rounded,
+      "bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-200",
+    ];
+  }
+
+  return [
+    "inline-flex items-center justify-center gap-2 font-semibold transition duration-200",
+    colors[props.color] || colors.blue,
+    sizes[props.size] || sizes.md,
+    props.rounded,
+  ];
+});
 
 const iconSize = computed(() => iconSizes[props.size] || iconSizes.md);
 </script>

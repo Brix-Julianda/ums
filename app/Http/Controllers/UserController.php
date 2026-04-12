@@ -85,6 +85,26 @@ class UserController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $validate = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->update([
+            'name' => $validate['name'],
+            'email' => $validate['email'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User updated successfully',
+            'redirect' => route('user.index'),
+        ]);
+    }
+
     public function edit()
     {
         // User Edit

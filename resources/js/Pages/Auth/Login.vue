@@ -26,7 +26,7 @@
 
         <div class="flex justify-end">
           <Button label="Login" color="blue" size="md" icon="fas fa-sign-in-alt" @click.prevent="login"
-            rounded="rounded-full" />
+            rounded="rounded-md" />
         </div>
       </form>
     </div>
