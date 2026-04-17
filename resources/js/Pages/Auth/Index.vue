@@ -8,7 +8,8 @@
         Create User
       </Link>
 
-      <Link href="/roles/create" as="button" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow">
+      <Link :href="route('role.index')" as="button"
+        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow">
         Create Role
       </Link>
     </div>
