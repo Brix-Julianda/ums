@@ -1,55 +1,61 @@
 <template>
-  <div class="p-2">
-    <div class="flex flex-col w-full bg-white shadow rounded-lg overflow-x p-5">
+  <div class="p-3 sm:p-6">
+    <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-4 sm:p-6 space-y-6">
 
-      <div class="flex justify-between items-center mb-4">
-        <div></div>
+      <!-- Header -->
+      <div class="flex items-center justify-between">
 
-        <!-- Back Button -->
-        <button @click="goBack" class="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg">
-          ← Back
-        </button>
+        <!-- Back Button (Button Component) -->
+        <Button icon="fa fa-arrow-left" variant="ghost" iconOnly="false" color="gray" @click="goBack" />
+
+        <!-- Edit Toggle -->
+        <Button :icon="editMode ? 'fa fa-pen' : 'fa fa-lock'" :color="editMode ? 'green' : 'gray'" variant="solid"
+          size="sm" @click="toggleEdit" label="Edit" />
+
       </div>
 
-      <div class="flex justify-end mb-4">
-        <button @click="toggleEdit" :class="editMode ? 'bg-green-500' : 'bg-gray-400'"
-          class="px-4 py-2 text-white rounded-lg">
-          {{ editMode ? 'Edit Mode: ON' : 'Edit Mode: OFF' }}
-        </button>
-      </div>
+      <!-- Form -->
+      <form class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-      <form class="space-y-4">
-        <div>
+        <div class="col-span-1 sm:col-span-2">
           <InputField id="name" label="Name" type="text" v-model="form.name" placeholder="Enter your name"
             :required="true" :validation="validation.name" :validationMessage="validationMessage.name"
             :disabled="!editMode" />
         </div>
-        <div>
+
+        <div class="col-span-1 sm:col-span-2">
           <InputField id="email" label="Email" type="email" v-model="form.email" placeholder="Enter your email"
             :required="true" :validation="validation.email" :validationMessage="validationMessage.email"
             :disabled="!editMode" />
         </div>
+
       </form>
 
-      <div class="flex justify-end mt-4">
-        <Button label="Save Changes" color="blue" size="md" @click.prevent="saveChanges" :disabled="!editMode" />
-      </div>
+      <!-- Actions -->
+      <div class="flex justify-end">
 
+        <Button label="Save" icon="fa fa-save" color="blue" variant="solid" :disabled="!editMode"
+          @click="saveChanges" />
+
+      </div>
 
     </div>
   </div>
 </template>
+
 <script setup>
 import { reactive, ref } from 'vue';
 import InputField from '../Components/InputField.vue';
 import AppLayout from '../Shared/NavBar.vue';
-import Button from '../Components/Button.vue';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { router } from '@inertiajs/vue3';
+import Button from '../Components/Button.vue';
 
 defineOptions({
   layout: AppLayout
 });
+
 
 const props = defineProps({
   user: Object,
@@ -71,10 +77,10 @@ const validationMessage = reactive({
 });
 
 const updateValidation = () => {
-  let valid = false;
+  let hasError = false;
 
   if (!form.name) {
-    valid = false;
+    hasError = true;
     validation.name = true;
     validationMessage.name = 'Name is required.';
   } else {
@@ -83,7 +89,7 @@ const updateValidation = () => {
   }
 
   if (!form.email) {
-    valid = true;
+    hasError = true;
     validation.email = true;
     validationMessage.email = 'Email is required.';
   } else {
@@ -91,36 +97,36 @@ const updateValidation = () => {
     validationMessage.email = '';
   }
 
-  return valid;
-}
+  return hasError;
+};
 
 const editMode = ref(false);
-
 
 const toggleEdit = () => {
   editMode.value = !editMode.value;
 };
 
+const goBack = () => {
+  router.visit(route('user.index'));
+};
 
 const saveChanges = async () => {
   try {
+    const hasError = updateValidation();
 
-    const validation = updateValidation();
-
-    if (validation) {
+    if (hasError) {
       Swal.fire({
         title: 'Error',
         text: 'Please fill up the fields',
         icon: 'error',
         toast: true,
         position: 'top-end',
-      })
-
+      });
       return;
     }
 
     const response = await axios.post(route('user.update', props.user.id), form);
-    window.location.href = response.data.redirect;
+
     Swal.fire({
       title: 'Success',
       text: response.data.message,
@@ -129,17 +135,14 @@ const saveChanges = async () => {
       position: 'top-end',
     });
 
+    router.visit(response.data.redirect);
 
   } catch (error) {
     Swal.fire({
       title: 'Error',
-      text: 'An error occurred while saving changes.' + error.message,
+      text: 'An error occurred while saving changes. ' + error.message,
       icon: 'error',
     });
   }
-
-
 };
-
-
 </script>
