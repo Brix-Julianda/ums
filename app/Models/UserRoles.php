@@ -10,11 +10,11 @@ class UserRoles extends Model
 
     protected $fillable = [
         'user_id',
-        'role_name',
+        'role_id',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_roles');
     }
 }

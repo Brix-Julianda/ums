@@ -29,6 +29,48 @@
             :disabled="!editMode" />
         </div>
 
+        <div class="col-span-1 sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Roles</label>
+
+          <!-- ✅ Selected Roles Badges -->
+          <div v-if="form.roles.length > 0" class="mb-3 flex flex-wrap gap-2">
+            <span v-for="role in form.roles" :key="role"
+              class="flex items-center gap-1 bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+              {{
+                list.roles.find(r => r.id === role)?.role_name
+              }}
+
+              <button v-if="editMode" type="button" @click="form.roles = form.roles.filter(r => r !== role)"
+                class="ml-1 text-blue-500 hover:text-red-500">
+                ✕
+              </button>
+            </span>
+          </div>
+
+          <!-- ✅ Roles List -->
+          <div v-if="list.roles && list.roles.length > 0" class="border border-gray-200 rounded-xl p-3 bg-gray-50">
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <label v-for="role in list.roles" :key="role"
+                class="flex items-center border rounded-lg px-3 py-2 cursor-pointer bg-white hover:bg-gray-50"
+                :class="!editMode ? 'opacity-60 cursor-not-allowed' : ''">
+                <input type="checkbox" :value="role.id" v-model="form.roles" :disabled="!editMode"
+                  class="accent-blue-600" />
+
+                <span class="ml-3 text-sm text-gray-700 capitalize">
+                  {{ role.role_name }}
+                </span>
+              </label>
+            </div>
+
+          </div>
+          <div v-else
+            class="border border-dashed border-gray-300 rounded-xl p-4 text-center text-sm text-gray-500 bg-gray-50">
+            No roles created yet.
+          </div>
+        </div>
+
+
       </form>
 
       <!-- Actions -->
@@ -59,11 +101,17 @@ defineOptions({
 
 const props = defineProps({
   user: Object,
+  roleList: Array,
 });
 
 const form = reactive({
   name: props.user.name,
   email: props.user.email,
+  roles: props.user.roles?.map(r => r.id) || [],
+});
+
+const list = reactive({
+  roles: props.roleList,
 });
 
 const validation = reactive({
@@ -125,7 +173,7 @@ const saveChanges = async () => {
       return;
     }
 
-    const response = await axios.post(route('user.update', props.user.id), form);
+    const response = await axios.put(route('user.update', props.user.id), form);
 
     Swal.fire({
       title: 'Success',

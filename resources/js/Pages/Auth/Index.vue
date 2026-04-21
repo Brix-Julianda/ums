@@ -40,7 +40,7 @@
               <template v-if="user.roles.length > 0">
                 <span v-for="role in user.roles" :key="role.id"
                   class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm mr-1">
-                  {{ role.name }}
+                  {{ role.role_name }}
                 </span>
               </template>
 

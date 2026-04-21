@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserRoles;
+use App\Models\Role;
+use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
     public function index()
     {
 
-        $role = UserRoles::all();
+        $role = Role::all();
 
         return inertia('Role/Index', [
             'role' => $role,
@@ -21,7 +22,22 @@ class RoleController extends Controller
         return inertia('Role/Create');
     }
 
-    public function store() {}
+    public function store(Request $request)
+    {
+        $validate = $request->validate([
+            'role_name' => 'required|string',
+        ]);
+
+        Role::create([
+            'role_name' => $validate['role_name'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Role created successfully',
+            'redirect' => route('role.index'),
+        ]);
+    }
 
     public function edit() {}
 

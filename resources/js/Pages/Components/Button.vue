@@ -50,15 +50,26 @@ const baseColors = {
   gray: "gray",
 };
 
-const variants = computed(() => {
-  const c = baseColors[props.color] || "blue";
-
-  return {
-    solid: `bg-${c}-600 hover:bg-${c}-700 text-white`,
-    outline: `border border-${c}-600 text-${c}-600 hover:bg-${c}-50`,
-    ghost: `text-${c}-600 hover:bg-${c}-100`,
-  };
-});
+const variants = {
+  solid: {
+    blue: "bg-blue-600 hover:bg-blue-700 text-white",
+    green: "bg-green-600 hover:bg-green-700 text-white",
+    red: "bg-red-600 hover:bg-red-700 text-white",
+    gray: "bg-gray-600 hover:bg-gray-700 text-white",
+  },
+  outline: {
+    blue: "border border-blue-600 text-blue-600 hover:bg-blue-50",
+    green: "border border-green-600 text-green-600 hover:bg-green-50",
+    red: "border border-red-600 text-red-600 hover:bg-red-50",
+    gray: "border border-gray-600 text-gray-600 hover:bg-gray-50",
+  },
+  ghost: {
+    blue: "text-blue-600 hover:bg-blue-100",
+    green: "text-green-600 hover:bg-green-100",
+    red: "text-red-600 hover:bg-red-100",
+    gray: "text-gray-600 hover:bg-gray-100",
+  },
+};
 
 const sizes = {
   sm: "px-3 py-1.5 text-sm",
@@ -86,9 +97,8 @@ const buttonClasses = computed(() => {
 
     props.disabled || props.loading
       ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-      : variants.value[props.variant],
+      : variants[props.variant][props.color] || variants.solid.blue,
 
-    // subtle shadow modern feel
     "shadow-sm hover:shadow-md",
   ];
 });

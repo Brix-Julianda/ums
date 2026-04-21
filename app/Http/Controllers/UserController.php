@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Auth;
 use Hash;
@@ -79,24 +80,31 @@ class UserController extends Controller
     {
 
         $user = User::with('roles')->findOrFail($id);
+        $roleList = Role::all();
 
         return inertia('User/Show', [
             'user' => $user,
+            'roleList' => $roleList,
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
+            'roles' => 'nullable|array',
+            'roles.*' => 'integer',
         ]);
 
         $user = User::findOrFail($id);
+
         $user->update([
-            'name' => $validate['name'],
-            'email' => $validate['email'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
         ]);
+
+        $user->roles()->sync($validated['roles'] ?? []);
 
         return response()->json([
             'success' => true,

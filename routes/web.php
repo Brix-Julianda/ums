@@ -12,12 +12,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/create-user', [UserController::class, 'create'])->name('user.create');
     Route::post('/store-user', [UserController::class, 'store'])->name('user.store');
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
-    Route::get('/users-nav', [UserController::class, 'NavBar'])->name('user.nav');
 
     // Role Links
 
     Route::get('/roles', [RoleController::class, 'index'])->name('role.index');
     Route::get('/create-role', [RoleController::class, 'create'])->name('role.create');
+    Route::post('/store-role', [RoleController::class, 'store'])->name('role.store');
 
 });
 
