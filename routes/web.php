@@ -20,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/store-role', [RoleController::class, 'store'])->name('role.store');
     Route::get('/roles/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
     Route::post('/roles/update/{id}', [RoleController::class, 'update'])->name('role.update');
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('role.destroy');
 
 });
 

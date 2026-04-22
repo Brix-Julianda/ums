@@ -60,7 +60,8 @@
                 </Link>
 
                 <!-- DELETE -->
-                <button class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition" title="Delete">
+                <button class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition" title="Delete"
+                  @click.prevent="confirmDelete(role.id)">
                   <i class="fa fa-trash"></i>
                 </button>
 
@@ -88,6 +89,8 @@
 import { route } from 'ziggy-js';
 import AppLayout from '../Shared/NavBar.vue'
 import { Link } from '@inertiajs/vue3'
+import Swal from 'sweetalert2';
+import axios from 'axios';
 
 
 defineOptions({
@@ -97,5 +100,37 @@ defineOptions({
 const props = defineProps({
   role: Object
 })
+
+const confirmDelete = (id) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This action annot be undone.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Delete User',
+  }).then((result) => {
+    axios.delete(route('role.destroy', id))
+      .then((res) => {
+        Swal.fire({
+          title: 'User Deleted!',
+          text: res.data.message,
+          icon: 'success'
+        }).then(() => {
+          window.location.href = res.data.redirect
+        })
+      })
+      .catch((error) => {
+        if (error.response?.data?.errors) {
+          const messages = Object.values(error.response.data.errors).flat()
+          Swal.fire({
+            title: 'Error',
+            html: messages.join('<br>'),
+            icon: 'error'
+          })
+        }
+      })
+  })
+}
 </script>
 <style scoped></style>
