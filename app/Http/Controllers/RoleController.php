@@ -39,9 +39,35 @@ class RoleController extends Controller
         ]);
     }
 
-    public function edit() {}
+    public function edit($id)
+    {
+        $role = Role::findOrFail($id);
 
-    public function update() {}
+        return inertia('Role/Edit', [
+            'role' => $role,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        $role = Role::findOrFail($id);
+
+        $validate = $request->validate([
+            'role_name' => 'required',
+        ]);
+
+        $role->update([
+            'role_name' => $validate['role_name'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Role update successfully',
+            'redirect' => route('role.index'),
+        ]);
+
+    }
 
     public function destroy() {}
 }

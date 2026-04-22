@@ -55,7 +55,7 @@
 
                 <!-- EDIT -->
                 <Link as="button" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition"
-                  title="Edit">
+                  title="Edit" :href="route('role.edit', role.id)">
                   <i class="fa fa-pencil"></i>
                 </Link>
 
@@ -85,6 +85,7 @@
   </div>
 </template>
 <script setup>
+import { route } from 'ziggy-js';
 import AppLayout from '../Shared/NavBar.vue'
 import { Link } from '@inertiajs/vue3'
 

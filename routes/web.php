@@ -18,6 +18,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/roles', [RoleController::class, 'index'])->name('role.index');
     Route::get('/create-role', [RoleController::class, 'create'])->name('role.create');
     Route::post('/store-role', [RoleController::class, 'store'])->name('role.store');
+    Route::get('/roles/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
+    Route::post('/roles/update/{id}', [RoleController::class, 'update'])->name('role.update');
 
 });
 
@@ -27,7 +29,3 @@ Route::post('/logout', function () {
 
     return redirect()->route('login');
 })->name('logout');
-
-// Route::get('/', function () {
-//         return inertia('Home');
-//     });
